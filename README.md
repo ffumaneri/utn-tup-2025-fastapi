@@ -11,27 +11,108 @@ Una API REST simple construida con FastAPI que administra una colección de obje
 - Documentación automática de la API
 - Validación de peticiones/respuestas con Pydantic
 
-## Instalación
+## Instalación y Configuración
 
-1. Asegúrate de tener Python 3.7+ instalado
-2. Instala FastAPI y Uvicorn:
+### Prerrequisitos
+
+- Python 3.7 o superior
+- pip (administrador de paquetes de Python)
+
+### Pasos de Instalación
+
+1. **Clonar o descargar el proyecto**
+   ```bash
+   # Si tienes el repositorio
+   git clone <url-del-repositorio>
+   cd clase1-fastapi
+   ```
+
+2. **Crear un entorno virtual**
+   ```bash
+   # Crear entorno virtual
+   python -m venv venv
+   
+   # En Windows
+   python -m venv venv
+   
+   # En macOS/Linux
+   python3 -m venv venv
+   ```
+
+3. **Activar el entorno virtual**
+   ```bash
+   # En Windows
+   venv\Scripts\activate
+   
+   # En macOS/Linux
+   source venv/bin/activate
+   ```
+
+4. **Instalar las dependencias**
+   ```bash
+   pip install fastapi uvicorn
+   ```
+
+   O si tienes un archivo requirements.txt:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### Crear archivo requirements.txt (Opcional)
+
+Para facilitar la instalación de dependencias, puedes crear un archivo `requirements.txt`:
 
 ```bash
-pip install fastapi uvicorn
+# Generar requirements.txt con las dependencias actuales
+pip freeze > requirements.txt
+```
+
+Contenido sugerido para `requirements.txt`:
+```
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
 ```
 
 ## Ejecutar la Aplicación
 
-Iniciar el servidor de desarrollo:
+1. **Asegúrate de tener el entorno virtual activado**
+   ```bash
+   # En Windows
+   venv\Scripts\activate
+   
+   # En macOS/Linux
+   source venv/bin/activate
+   ```
 
-```bash
-uvicorn main:app --reload
-```
+2. **Iniciar el servidor de desarrollo**
+   ```bash
+   uvicorn main:app --reload
+   ```
 
-La API estará disponible en:
-- **API**: http://localhost:8000
-- **Documentación Interactiva**: http://localhost:8000/docs
-- **Documentación Alternativa**: http://localhost:8000/redoc
+   O alternativamente:
+   ```bash
+   python -m uvicorn main:app --reload
+   ```
+
+3. **La aplicación estará disponible en:**
+   - **API**: http://localhost:8000
+   - **Documentación Interactiva**: http://localhost:8000/docs
+   - **Documentación Alternativa**: http://localhost:8000/redoc
+
+### Detener la Aplicación y Desactivar el Entorno
+
+1. **Para detener el servidor:** Presiona `Ctrl + C` en la terminal
+
+2. **Para desactivar el entorno virtual:**
+   ```bash
+   deactivate
+   ```
+
+### Solución de Problemas Comunes
+
+- **Error "uvicorn: command not found"**: Asegúrate de que el entorno virtual esté activado
+- **Error de puerto ocupado**: Usa un puerto diferente con `--port 8080`
+- **Problemas de permisos**: En Linux/macOS, usa `python3` en lugar de `python`
 
 ## Endpoints de la API
 
