@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  postgres_utn:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    container_name: postgres_utn_db
+    environment:
+      POSTGRES_DB: UTN
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "55433:5432"  # Puerto externo 55432 mapeado al interno 5432
+    volumes:
+      - postgres_utn_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d  # Scripts de inicialización opcionales
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d UTN"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  postgres_utn_data:
+    driver: local

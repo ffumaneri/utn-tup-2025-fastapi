@@ -1,9 +1,27 @@
 from fastapi import FastAPI, Query, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional, Dict, Any
+from contextlib import asynccontextmanager
 from pydantic import BaseModel
+from database import create_db_and_tables
+from personas import router as personas_router
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    create_db_and_tables()
+    yield
+    # Shutdown (if needed)
+
+app = FastAPI(
+    title="FastAPI CRUD App", 
+    description="API with Personas CRUD", 
+    version="1.0.0",
+    lifespan=lifespan
+)
+
+# Include personas router
+app.include_router(personas_router)
 
 # Add CORS middleware
 app.add_middleware(

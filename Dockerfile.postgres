@@ -1,0 +1,19 @@
+# Dockerfile para PostgreSQL con base de datos UTN
+FROM postgres:15
+
+# Variables de entorno para PostgreSQL
+ENV POSTGRES_DB=UTN
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=postgres
+ENV POSTGRES_HOST_AUTH_METHOD=trust
+
+# Crear directorio para scripts de inicialización
+RUN mkdir -p /docker-entrypoint-initdb.d
+
+# Script de inicialización para crear la base de datos UTN (por si no se crea automáticamente)
+RUN echo "CREATE DATABASE IF NOT EXISTS UTN;" > /docker-entrypoint-initdb.d/init.sql
+
+# Exponer puerto 5432 (internamente)
+EXPOSE 5432
+
+# El contenedor se ejecutará con el comando por defecto de postgres

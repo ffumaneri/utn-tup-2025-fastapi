@@ -1,15 +1,27 @@
 # API de Objetos con FastAPI
 
-Una API REST simple construida con FastAPI que administra una colección de objetos (teléfonos, tablets, laptops, etc.).
+Una API REST construida con FastAPI que administra una colección de objetos y un CRUD completo de personas.
 
 ## Características
 
+### Objetos API (Existente)
 - Obtener todos los objetos o filtrar por IDs
 - Obtener un objeto por ID
 - Agregar nuevos objetos
 - Eliminar objetos
+
+### Personas CRUD (Nuevo)
+- CRUD completo para entidad Persona (nombre, apellido, edad)
+- SQLModel como ORM
+- PostgreSQL como base de datos
+- Patrón Repository para acceso a datos
+- Endpoints con paginación y búsqueda
+- Validación de datos con Pydantic
+
+### Generales
 - Documentación automática de la API
 - Validación de peticiones/respuestas con Pydantic
+- Middleware CORS configurado
 
 ## Instalación y Configuración
 
@@ -17,6 +29,7 @@ Una API REST simple construida con FastAPI que administra una colección de obje
 
 - Python 3.7 o superior
 - pip (administrador de paquetes de Python)
+- PostgreSQL (para la funcionalidad de Personas CRUD)
 
 ### Pasos de Instalación
 
@@ -56,6 +69,24 @@ Una API REST simple construida con FastAPI que administra una colección de obje
    O si tienes un archivo requirements.txt:
    ```bash
    pip install -r requirements.txt
+   ```
+
+6. **Configurar PostgreSQL (Para Personas CRUD)**
+
+   Instala PostgreSQL en tu sistema y crea una base de datos:
+
+   ```bash
+   # Crear base de datos (desde psql o pgAdmin)
+   CREATE DATABASE fastapi_db;
+   ```
+
+   Configura las variables de entorno creando un archivo `.env`:
+   ```bash
+   # Copia el archivo de ejemplo
+   cp env_example.txt .env
+   
+   # Edita .env con tus credenciales de PostgreSQL
+   DATABASE_URL=postgresql://tu_usuario:tu_password@localhost:5432/fastapi_db
    ```
 
 ### Crear archivo requirements.txt (Opcional)
@@ -116,7 +147,9 @@ uvicorn[standard]==0.24.0
 
 ## Endpoints de la API
 
-### 1. Obtener Todos los Objetos
+### Objetos API (Endpoints existentes)
+
+#### 1. Obtener Todos los Objetos
 
 **GET** `/objects`
 
@@ -267,6 +300,98 @@ La API devuelve códigos de estado HTTP apropiados:
 - **404 Not Found** - Objeto no encontrado
 - **422 Unprocessable Entity** - Datos de petición inválidos
 
+### Personas CRUD API (Nuevos endpoints)
+
+#### 1. Crear Persona
+
+**POST** `/personas/`
+
+Crea una nueva persona.
+
+```bash
+curl -X POST "http://localhost:8000/personas/" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "edad": 25
+  }'
+```
+
+#### 2. Obtener Todas las Personas
+
+**GET** `/personas/`
+
+Obtiene todas las personas con paginación.
+
+```bash
+# Obtener todas las personas
+curl "http://localhost:8000/personas/"
+
+# Con paginación
+curl "http://localhost:8000/personas/?skip=0&limit=10"
+```
+
+#### 3. Obtener Persona por ID
+
+**GET** `/personas/{persona_id}`
+
+Obtiene una persona específica por su ID.
+
+```bash
+curl "http://localhost:8000/personas/1"
+```
+
+#### 4. Actualizar Persona
+
+**PUT** `/personas/{persona_id}`
+
+Actualiza una persona existente (actualización parcial).
+
+```bash
+curl -X PUT "http://localhost:8000/personas/1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "edad": 26
+  }'
+```
+
+#### 5. Eliminar Persona
+
+**DELETE** `/personas/{persona_id}`
+
+Elimina una persona por su ID.
+
+```bash
+curl -X DELETE "http://localhost:8000/personas/1"
+```
+
+#### 6. Buscar Personas por Nombre
+
+**GET** `/personas/search/`
+
+Busca personas por nombre o apellido (coincidencia parcial).
+
+```bash
+curl "http://localhost:8000/personas/search/?nombre=Juan"
+```
+
+### Modelo de Datos - Persona
+
+```json
+{
+  "id": 1,
+  "nombre": "Juan",
+  "apellido": "Pérez", 
+  "edad": 25
+}
+```
+
+**Validaciones:**
+- `nombre`: Requerido, máximo 100 caracteres
+- `apellido`: Requerido, máximo 100 caracteres  
+- `edad`: Requerido, entero entre 0 y 150
+
 ## Documentación Interactiva
 
 FastAPI genera automáticamente documentación interactiva de la API. Visita:
@@ -286,16 +411,29 @@ Estas interfaces te permiten:
 
 ```
 clase1-fastapi/
-├── main.py          # Aplicación FastAPI
-├── README.md        # Este archivo
-└── __pycache__/     # Archivos cache de Python
+├── main.py              # Aplicación FastAPI principal
+├── personas.py          # Endpoints CRUD para Personas
+├── models.py            # Modelos SQLModel (Persona)
+├── repository.py        # Patrón Repository para acceso a datos
+├── database.py          # Configuración de base de datos PostgreSQL
+├── requirements.txt     # Dependencias del proyecto
+├── env_example.txt      # Ejemplo de variables de entorno
+├── README.md            # Este archivo
+└── __pycache__/         # Archivos cache de Python
 ```
 
 ### Dependencias Principales
 
+#### Existentes
 - **FastAPI** - Framework web moderno y rápido para APIs
 - **Uvicorn** - Servidor ASGI para ejecutar FastAPI
 - **Pydantic** - Validación de datos usando anotaciones de tipos de Python
+
+#### Nuevas (para Personas CRUD)
+- **SQLModel** - ORM moderno de SQLAlchemy con integración Pydantic
+- **PostgreSQL** - Base de datos relacional
+- **asyncpg** - Driver asíncrono para PostgreSQL
+- **psycopg2-binary** - Driver alternativo para PostgreSQL
 
 ### Agregar Nuevas Funcionalidades
 
