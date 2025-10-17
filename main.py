@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from database import create_db_and_tables
 from objects import objects_router
 from personas import router as personas_router
+from paises import router as paises_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,6 +23,9 @@ app = FastAPI(
 
 # Include personas router
 app.include_router(personas_router)
+# Include paises router  
+app.include_router(paises_router)
+# Include objects router
 app.include_router(objects_router)
 
 # Add CORS middleware
